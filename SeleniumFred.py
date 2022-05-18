@@ -18,6 +18,7 @@ try:
     os.mkdir(new_folder)
 except:
     shutil.rmtree(new_folder)
+    os.mkdir(new_folder)
 
 
 # configuring downloadPath
