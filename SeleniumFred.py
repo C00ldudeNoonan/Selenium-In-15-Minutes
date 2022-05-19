@@ -1,13 +1,12 @@
 import shutil
-import selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time, os
+import time
+import os
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
 from selenium.common.exceptions import NoSuchElementException
-
 
 
 # creating a new folder location for today
@@ -16,7 +15,7 @@ new_folder = os.path.join(downloadPath, datetime.now().strftime("%Y_%m_%d"))
 
 try:
     os.mkdir(new_folder)
-except:
+except FileExistsError:
     shutil.rmtree(new_folder)
     os.mkdir(new_folder)
 
@@ -24,8 +23,8 @@ except:
 # configuring downloadPath
 options = webdriver.ChromeOptions()
 prefs = {"download.default_directory": new_folder,
-           "download.directory_upgrade": True,
-           "download.prompt_for_download": False
+         "download.directory_upgrade": True,
+         "download.prompt_for_download": False
          }
 
 # driver settings
@@ -34,19 +33,15 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), chro
 
 
 def download_fed_csv(econ_data_code):
-
-    '''
-    Takes a econ time series code from the st. louis fed website
-    and downloads the csv to the download location
-    :return: csv file location
-    '''
+    # Takes an econ time series code from the st. louis fed website
+    # and downloads the csv to the download location
 
     fred_url = "https://fred.stlouisfed.org/series/"
     driver.get(fred_url+econ_data_code)
     time.sleep(2)
 
     try:
-        driver.find_element(By.XPATH,"//*[@id='download-button']" ).click()
+        driver.find_element(By.XPATH, "//*[@id='download-button']").click()
         time.sleep(1)
         driver.find_element(By.XPATH, "//*[@id='download-data-csv']").click()
 
@@ -68,7 +63,3 @@ for code in data_codes:
 
 
 driver.close()
-
-
-
-
